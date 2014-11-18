@@ -9,16 +9,20 @@ Template.postEdit.events({
             title: $(e.target).find('[name=title]').val()
         };
 
+        // Keep track old URL in case edit fails
         var previousUrl = this.url;
 
         Meteor.call('postUpdate', currentPostId, postProperties, function (error, result) {
             if (error) {
-                return alert(error.reason);
+                return throwError(error.reason);
             }
 
             if (result.postExists) {
+
+                // Reset URL value to the original post URL
                 $(e.target).find('[name=url]').val(previousUrl);
-                alert('This link has already been posted');
+
+                throwError('This link has already been posted');
             }
         });
     },
